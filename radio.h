@@ -30,7 +30,7 @@ void radio_setup() {
 	digitalWrite(RFM95_RST, HIGH);
 	delay(10);
 
-  radio = new RHReliableDatagram(*rfm96w, mynodeid);
+  radio = new RHReliableDatagram(*rfm96w, mynodeid());
   radio->setTimeout(RADIO_SEND_ACK_TIMEOUT);
   radio->setRetries(0);
 
@@ -49,7 +49,7 @@ void radio_setup() {
 
 bool radio_send(byte *buffer, byte length, byte flags=0) {
   radio->setHeaderFlags(flags,0x0F);
-  if (radio->sendtoWait(buffer, length, othernodeid)) {
+  if (radio->sendtoWait(buffer, length, othernodeid())) {
 	  console("  Radio send: %d bytes (success)\n",length);
     return true;
   }

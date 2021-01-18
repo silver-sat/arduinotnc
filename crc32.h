@@ -2,7 +2,9 @@
 // Support for computing checksums
 //
 
-unsigned long crc32b(uint8_t *buffer, int len) {
+#include <assert.h>
+
+unsigned long crc32(uint8_t *buffer, int len) {
   int i, j;
   unsigned long byte, crc, mask;
 

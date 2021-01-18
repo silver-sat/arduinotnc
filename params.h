@@ -5,7 +5,7 @@
 #define SERIALBAUD     115200
 #define SERIALTIMEOUT  5
 
-#define RADIO_FREQ               433.0
+#define RADIO_FREQ               435.0
 #define RADIO_POWER              5
 #define RADIO_SEND_ACK_TIMEOUT   50
 #define RADIO_RECEIVE_TIMEOUT	   5
@@ -17,5 +17,5 @@
 
 #define SEND_DELAY         100
 #define SEND_FAIL_DELAY    250  
-#define RECEIVE_SEND_DELAY 200
+#define RECEIVE_DELAY 200
 #define INTERFRAME_DELAY   200

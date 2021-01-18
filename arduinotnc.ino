@@ -3,6 +3,7 @@
 #include "params.h"
 #include "globals.h"
 #include "console.h"
+#include "crc32.h"
 #include "serial.h"
 #include "blinker.h"
 #include "nodeid.h"
@@ -95,8 +96,8 @@ void loop() {
     }
 
     // Delay any other action(s) to give a chance for more radio messages
-    send_waitfor_atleast(RECEIVE_SEND_DELAY);
-    rpiread_waitfor_atleast(RECEIVE_SEND_DELAY);
+    send_waitfor_atleast(RECEIVE_DELAY);
+    rpiread_waitfor_atleast(RECEIVE_DELAY);
   }
 
   if (rpiread_now() && !havedata && serial_read(&rpireadlen)) {

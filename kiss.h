@@ -40,6 +40,9 @@ bool kissfindframes(const byte *buffer, unsigned int length) {
       _kiss_framestart[frameno] = frstart;
       _kiss_framelength[frameno] = frlen;
       frameno += 1;
+      console("Frame %d: start %d %0x %0x len %d %0x\n", frameno, frstart, buffer[frstart], (buffer[frstart + 1] & 0x0F), frlen, buffer[frend - 1]);
+    } else {
+      console("Frame X: start %d %0x %0x len %d %0x\n", frstart, buffer[frstart], (buffer[frstart + 1] & 0x0F), frlen, buffer[frend - 1]);
     }
     // find next (start) FEND (starting with previous end FEND) 
     // that is not followed by a FEND 
@@ -49,10 +52,21 @@ bool kissfindframes(const byte *buffer, unsigned int length) {
     }
   }
   _kiss_framecount = frameno;
-  for (uint i = 0; i < _kiss_framecount; i++) {
-    console("Frame %d: start %d %0x len %d %0x\n", i + 1, _kiss_framestart[i], buffer[_kiss_framestart[i]], _kiss_framelength[i], buffer[_kiss_framestart[i] + _kiss_framelength[i] - 1]);
-  }
+  // for (uint i = 0; i < _kiss_framecount; i++) {
+  //   console("Frame %d: start %d %0x %0x len %d %0x\n", i + 1, _kiss_framestart[i], buffer[_kiss_framestart[i]], (buffer[_kiss_framestart[i] + 1] & 0x0F), _kiss_framelength[i], buffer[_kiss_framestart[i] + _kiss_framelength[i] - 1]);
+  // }
   return (_kiss_framecount > 0);
+}
+
+bool kissoneframe(byte *buffer, unsigned int length) {
+  _kiss_framestart[0] = 0;
+  _kiss_framelength[0] = length;
+  _kiss_framecount = 1;
+  if (buffer[length-1] != FEND) {
+    buffer[length] = FEND;
+    _kiss_framelength[0] += 1;
+  }
+  return true;
 }
 
 uint kissframestart(byte i) {

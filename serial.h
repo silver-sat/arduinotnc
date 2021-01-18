@@ -13,7 +13,7 @@ void serial_setup(byte *buffer, uint bufferlen) {
 bool serial_read(uint* outlen) {
   uint readlen = RPISERIAL.readBytes(_serial_buffer, _serial_buflen);
   if (readlen > 0) {
-    console(" Serial read: %d bytes\n",readlen);
+    console(" Serial read: %d bytes (CRC: %ul)\n",readlen,crc32(_serial_buffer, readlen));
     (*outlen) = readlen;
     return true;
 	}
@@ -21,7 +21,7 @@ bool serial_read(uint* outlen) {
 }
 
 void serial_write(const byte *buffer, uint length) {
-	console("Serial write: %u bytes\n",length);
+	console("Serial write: %u bytes (CRC: %ul)\n",length,crc32(buffer, length));
 	RPISERIAL.write(buffer, length);
 }
 
