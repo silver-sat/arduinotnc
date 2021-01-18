@@ -8,6 +8,7 @@ char _console_outbuffer[128];
 
 void console_setup(bool output) {
   if (output) {
+    _console_output = output;
     Serial.begin(9600);
   }
 }
