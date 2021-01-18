@@ -97,10 +97,9 @@ void loop() {
 
     // Delay any other action(s) to give a chance for more radio messages
     send_waitfor_atleast(RECEIVE_DELAY);
-    rpiread_waitfor_atleast(RECEIVE_DELAY);
   }
 
-  if (rpiread_now() && !havedata && serial_read(&rpireadlen)) {
+  if (!havedata && serial_read(&rpireadlen)) {
     if (kissfindframes(rpireadbuf, rpireadlen)) {
       send_waitfor_atleast(SEND_DELAY);
       havedata = true;
@@ -123,6 +122,7 @@ void loop() {
     byte flags = (frameid << 2) | (msgindex & 0x03);
     // console("flags: %d%d%d%d\n",((flags>>3)&0x01),((flags>>2)&0x01),((flags>>1)&0x01),flags&0x01);
     if (radio_send(rpireadbuf + kissframestart(frameindex) + msgstart, msglen, flags)) {
+      blinkit();
       if (last) {
         frameindex += 1;
         if (frameindex >= kissframecount()) {

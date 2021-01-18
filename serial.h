@@ -1,7 +1,10 @@
 
+#ifndef _SERIAL_H_
+#define _SERIAL_H_
+
 // buffers for rpi read, rpi write
-byte *_serial_buffer;
-uint _serial_buflen;
+byte *_serial_buffer=0;
+uint _serial_buflen=0;
 
 void serial_setup(byte *buffer, uint bufferlen) {
 	RPISERIAL.begin(SERIALBAUD);
@@ -11,7 +14,8 @@ void serial_setup(byte *buffer, uint bufferlen) {
 }
 
 bool serial_read(uint* outlen) {
-  uint readlen = RPISERIAL.readBytes(_serial_buffer, _serial_buflen);
+  uint readlen = 0;
+  readlen = RPISERIAL.readBytes(_serial_buffer, _serial_buflen);
   if (readlen > 0) {
     console(" Serial read: %d bytes (CRC: %ul)\n",readlen,crc32(_serial_buffer, readlen));
     (*outlen) = readlen;
@@ -34,3 +38,5 @@ byte XON = 0x12;
 void serial_write_xon() {
   RPISERIAL.write(&XON,1);
 }
+
+#endif

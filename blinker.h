@@ -3,6 +3,9 @@
 // Suport for blinking the board's LED, no use of delay!!!
 //
 
+#ifndef _BLINKER_H_
+#define _BLINKER_H_
+
 #define LEDPIN LED_BUILTIN
 #define LEDINT 100
 
@@ -43,3 +46,5 @@ void blinker_update() {
     }
   }
 }
+
+#endif

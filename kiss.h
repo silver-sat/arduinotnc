@@ -3,6 +3,9 @@
 // Support for chopping a buffer into individual KISS frames
 //
 
+#ifndef _KISS_H_
+#define _KISS_H_
+
 // Relies on console, types, and MAX_KISS_FRAME
 
 #include <assert.h>
@@ -82,3 +85,5 @@ uint kissframelength(byte i) {
 uint kissframecount() {
   return _kiss_framecount;
 }
+
+#endif

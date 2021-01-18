@@ -1,4 +1,7 @@
 
+#ifndef _TIMER_H_
+#define _TIMER_H_
+
 #include <limits.h>
 
 // Timing state variables
@@ -51,3 +54,5 @@ void rpiread_waitfor_atleast_random(duration period) {
 bool xoff_now() {
   return isafter(_timer_nextxoff);
 }
+
+#endif

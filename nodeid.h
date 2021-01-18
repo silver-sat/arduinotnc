@@ -1,4 +1,7 @@
 
+#ifndef _NODEID_H_
+#define _NODEID_H_
+
 #include <EEPROM.h>
 
 byte _nodeid_mynodeid;
@@ -23,3 +26,5 @@ byte mynodeid() {
 byte othernodeid() {
   return _nodeid_othernodeid;
 }
+
+#endif

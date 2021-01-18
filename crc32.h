@@ -2,6 +2,9 @@
 // Support for computing checksums
 //
 
+#ifndef _CRC32_H_
+#define _CRC32_H_
+
 #include <assert.h>
 
 unsigned long crc32(uint8_t *buffer, int len) {
@@ -31,3 +34,5 @@ uint8_t crc32byte(uint8_t *buffer, int len, uint8_t index) {
   unsigned long crc = crc32(buffer,len);
   return getbyte(crc,index);
 }
+
+#endif
