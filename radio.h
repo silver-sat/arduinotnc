@@ -30,30 +30,30 @@ void radio_setup() {
 	digitalWrite(RFM95_RST, HIGH);
 	delay(10);
 
-  radio = new RHReliableDatagram(*rfm96w, mynodeid());
+  radio = new RHReliableDatagram(*rfm96w, nodeid.me());
   radio->setTimeout(RADIO_SEND_ACK_TIMEOUT);
   radio->setRetries(0);
 
 	if (!radio->init()) {
-		console("LoRa radio init failed");
+		console.printf("LoRa radio init failed");
 		while (1);
 	}
 	if (!rfm96w->setFrequency(RADIO_FREQ)) {
-		console("setFrequency failed");
+		console.printf("setFrequency failed");
 		while (1);
 	}
 	rfm96w->setTxPower(RADIO_POWER, false);
 
-  console("Radio ready.\n");
+  console.printf("Radio ready.\n");
 }
 
 bool radio_send(byte *buffer, byte length, byte flags=0) {
   radio->setHeaderFlags(flags,0x0F);
-  if (radio->sendtoWait(buffer, length, othernodeid())) {
-	  console("  Radio send: %d bytes (success)\n",length);
+  if (radio->sendtoWait(buffer, length, nodeid.them())) {
+	  console.printf("  Radio send: %d bytes (success)\n",length);
     return true;
   }
-  console("  Radio send: %d bytes (failed)\n",length);
+  console.printf("  Radio send: %d bytes (failed)\n",length);
   return false;
 }
 
@@ -63,7 +63,7 @@ bool radio_receive() {
   if (radio->recvfromAckTimeout(radiobuf, &radiolen, RADIO_RECEIVE_TIMEOUT) && radiolen > 0) {
 	  radioflags = radio->headerFlags();
 	  radiobuf[radiolen] = '\0';
-	  console("  Radio recv: %d bytes\n",radiolen);
+	  console.printf("  Radio recv: %d bytes\n",radiolen);
     return true;
   }
   return false;	

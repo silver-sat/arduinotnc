@@ -7,7 +7,7 @@
 
 #include <assert.h>
 
-unsigned long crc32(uint8_t *buffer, int len) {
+unsigned long crc32(const uint8_t *buffer, const int len) {
   int i, j;
   unsigned long byte, crc, mask;
 
@@ -29,8 +29,8 @@ uint8_t getbyte(unsigned long a, uint8_t b) {
   return (uint8_t)((a >> (b * 8)) & 0x000000ff);
 }
 
-uint8_t crc32byte(uint8_t *buffer, int len, uint8_t index) {
-  assert (0 <= index <= 3);
+uint8_t crc32byte(const uint8_t *buffer, const int len, const uint8_t index) {
+  assert (index <= 3);
   unsigned long crc = crc32(buffer,len);
   return getbyte(crc,index);
 }

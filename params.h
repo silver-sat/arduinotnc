@@ -7,6 +7,7 @@
 #define RPISERIAL      Serial3
 #define SERIALBAUD     115200
 #define SERIALTIMEOUT  5
+#define RPIREADBUFFERSIZE 4096
 
 #define RADIO_FREQ               435.0
 #define RADIO_POWER              5

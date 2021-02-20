@@ -2,41 +2,65 @@
 #ifndef _SERIAL_H_
 #define _SERIAL_H_
 
-// buffers for rpi read, rpi write
-byte *_serial_buffer=0;
-uint _serial_buflen=0;
+#include <Arduino.h>
 
-void serial_setup(byte *buffer, uint bufferlen) {
-	RPISERIAL.begin(SERIALBAUD);
-	RPISERIAL.setTimeout(SERIALTIMEOUT);
-  _serial_buffer = buffer;
-  _serial_buflen = bufferlen;
-}
-
-bool serial_read(uint* outlen) {
-  uint readlen = 0;
-  readlen = RPISERIAL.readBytes(_serial_buffer, _serial_buflen);
-  if (readlen > 0) {
-    console(" Serial read: %d bytes (CRC: %ul)\n",readlen,crc32(_serial_buffer, readlen));
-    (*outlen) = readlen;
-    return true;
-	}
-	return false;
-}
-
-void serial_write(const byte *buffer, uint length) {
-	console("Serial write: %u bytes (CRC: %ul)\n",length,crc32(buffer, length));
-	RPISERIAL.write(buffer, length);
-}
+#include "types.h"
+#include "crc32.h"
 
 byte XOFF = 0x13;
-void serial_write_xoff() {
-  RPISERIAL.write(&XOFF,1);
-}
+byte XON  = 0x12;
 
-byte XON = 0x12;
-void serial_write_xon() {
-  RPISERIAL.write(&XON,1);
-}
-
+class SerialConnection {
+  private:
+    byte *_buffer;
+    uint _bufferlen;
+    long unsigned int _baud;
+    unsigned int _timeout;
+    HardwareSerial &_serial; 
+  public:
+    SerialConnection(HardwareSerial &serial,
+                     byte *buffer,
+                     const uint bufferlen,
+                     const long unsigned int baud,
+                     const unsigned int timeout): _serial(serial) {
+      _buffer = buffer;
+      _bufferlen = bufferlen;
+      _baud = baud;
+      _timeout = timeout;
+    };
+    SerialConnection(HardwareSerial &serial,
+                     const uint bufferlen,
+                     const long unsigned int baud,
+                     const unsigned int timeout): _serial(serial) {
+      _buffer = new byte[bufferlen];
+      _bufferlen = bufferlen;
+      _baud = baud;
+      _timeout = timeout;
+    };
+    void initialize() {
+      _serial.begin(_baud);
+      _serial.setTimeout(_timeout);
+    };
+    bool read(byte* &buffer, uint &length) {
+      uint readlen = 0;
+      readlen = _serial.readBytes(_buffer, _bufferlen);
+      if (readlen > 0) {
+        console.printf(" Serial read: %d bytes (CRC: %ul)\n",readlen,crc32(_buffer, readlen));
+        length = readlen;
+        buffer = _buffer;
+        return true;
+      }
+      return false;
+    };
+    void write(const byte *buffer, const uint length) {
+      console.printf("Serial write: %u bytes (CRC: %ul)\n",length,crc32(buffer, length));
+      _serial.write(buffer, length);
+    };
+    void xon() {
+      _serial.write(&XON,1);
+    };
+    void xoff() {
+      _serial.write(&XOFF,1);
+    };
+};
 #endif

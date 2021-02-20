@@ -1,58 +1,51 @@
 
+/*
+  timer - tracking the next time events should happen
+  Created by Nathan Edwards 1/31/2021.
+  Released into the public domain.
+*/
+
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
-#include <limits.h>
+#include <Arduino.h>
 
-// Timing state variables
-ulong _timer_nextrpiread = 0;
-ulong _timer_nextsend = 0;
-ulong _timer_nextxoff = 0;
+#include "types.h"
 
-#define FOREVER ULONG_MAX;
+class Timer {
 
-void timer_setup() {
-  randomSeed(analogRead(0));
-}
+  private:
 
-bool isafter(timestamp timepoint) {
-  return (timepoint < millis());
-}
+    static bool _rngseeded;
+    timestamp _next = 0;
 
-ulong waitfor_atleast(timestamp current, duration period) {
-  return max(current,(millis() + period));
-}
+  public:
 
-ulong waitfor_atleast_random(timestamp current, duration period) {
-  return max(current,(millis() + period + period*random(1024)/1024));
-}
+    Timer() {
+      _next = 0;
+      if (!_rngseeded) {
+        randomSeed(analogRead(0));
+        _rngseeded = true;
+      }
+    }
 
-bool send_now() {
-  return isafter(_timer_nextsend);
-}
+    bool ready() {
+      return (_next < millis());
+    }
 
-void send_waitfor_atleast(duration period) {
-  _timer_nextsend = waitfor_atleast(_timer_nextsend, period);
-}
+    void wait(duration period) {
+      _next = max(_next, (millis() + period));
+    }
 
-void send_waitfor_atleast_random(duration period) {
-  _timer_nextsend = waitfor_atleast_random(_timer_nextsend, period);
-}
+    void random_wait(duration period1, duration period2) {
+      this->wait(period1 + (period2 - period1)*random(1024) / 1024);
+    }
 
-bool rpiread_now() {
-  return isafter(_timer_nextrpiread);
-}
+    void random_wait(duration period) {
+      this->random_wait(period, 2 * period);
+    }
+};
 
-void rpiread_waitfor_atleast(duration period) {
-  _timer_nextrpiread = waitfor_atleast(_timer_nextrpiread, period);
-}
-
-void rpiread_waitfor_atleast_random(duration period) {
-  _timer_nextrpiread = waitfor_atleast_random(_timer_nextrpiread, period);
-}
-
-bool xoff_now() {
-  return isafter(_timer_nextxoff);
-}
+bool Timer::_rngseeded = false;
 
 #endif
