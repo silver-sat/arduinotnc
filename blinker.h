@@ -10,10 +10,10 @@
 
     if (...) {
       // blink the built-in LED three times...
-      blinker.blinkit(3);  
+      blinker.blink(3);
     }
   }
-  
+
 */
 
 #ifndef _BLINKER_H_
@@ -23,6 +23,8 @@
 
 #define LEDPIN LED_BUILTIN
 #define LEDINT 100
+
+#define HAS_BLINKER
 
 class Blinker {
 
@@ -43,6 +45,7 @@ class Blinker {
       pinMode(_ledpin, OUTPUT);
       digitalWrite(_ledpin, LOW);
     }
+
     void update() {
       if (_transtime > 0 && millis() > _transtime) {
         if (_ledstate == HIGH) {
@@ -71,5 +74,7 @@ class Blinker {
       }
     }
 };
+
+Blinker blinker;
 
 #endif

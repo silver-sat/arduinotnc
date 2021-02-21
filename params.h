@@ -2,8 +2,6 @@
 #ifndef _PARAMS_H_
 #define _PARAMS_H_
 
-#define CONSOLE 1
-
 #define RPISERIAL      Serial3
 #define SERIALBAUD     115200
 #define SERIALTIMEOUT  5
@@ -19,8 +17,10 @@
 #define MSGSIZE		200
 #define MAX_ATTEMPTS 10
 
+#define RPIWRITEBUFFERSIZE MAX_KISS_FRAME
+
 #define SEND_DELAY         100
-#define SEND_FAIL_DELAY    250  
+#define SEND_FAIL_DELAY    250
 #define RECEIVE_DELAY      200
 #define INTERFRAME_DELAY   100
 

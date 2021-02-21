@@ -21,14 +21,20 @@ class NodeID {
       _them = (3 - _me);
     }
     byte me() {
-      return _me; 
+      return _me;
     }
     byte them() {
       return _them;
     }
-    write_nodeid(byte id) {
-      // ...
+    void write_nodeid(byte id) {
+      char tag[7];
+      sprintf(tag, "ARD%03d", id);
+      for (int i = 0; i < 6; i++) {
+        EEPROM.write(i, tag[i]);
+      }
     }
 };
+
+NodeID nodeid;
 
 #endif

@@ -45,9 +45,13 @@ class KISSFrames {
           _start[frameno] = frstart;
           _length[frameno] = frlen;
           frameno += 1;
+#ifdef SERIAL_CONSOLE
           console.printf("Frame %d: start %d %0x %0x len %d %0x\n", frameno, frstart, buffer[frstart], (buffer[frstart + 1] & 0x0F), frlen, buffer[frend - 1]);
+#endif
         } else {
-          console.printf("Frame X: start %d %0x %0x len %d %0x\n", frstart, buffer[frstart], (buffer[frstart + 1] & 0x0F), frlen, buffer[frend - 1]);
+#ifdef SERIAL_CONSOLE
+          console->printf("Frame X: start %d %0x %0x len %d %0x\n", frstart, buffer[frstart], (buffer[frstart + 1] & 0x0F), frlen, buffer[frend - 1]);
+#endif
         }
         // find next (start) FEND (starting with previous end FEND)
         // that is not followed by a FEND
@@ -72,7 +76,8 @@ class KISSFrames {
     };
 };
 
-class OneFrame: KISSFrames {
+class OneFrame: public KISSFrames {
+  public:
     bool findframes(byte * buffer, unsigned int length) {
       _start[0] = 0;
       _length[0] = length;

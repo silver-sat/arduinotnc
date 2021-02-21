@@ -8,18 +8,20 @@
   ...
 
   // Use printf style formatting strings and variables...
-  console("%s: %.3f %02x",string_value, float_value, byte_value);
+  console.printf("%s: %.3f %02x",string_value, float_value, byte_value);
 
 */
 
 #ifndef _CONSOLE_H_
 #define _CONSOLE_H_
 
+#define HAS_CONSOLE
+
 #include <Arduino.h>
 
 class SerialConsole {
-  bool _output = false;
-  char _outbuffer[256];
+    bool _output = false;
+    char _outbuffer[256];
 
   public:
     SerialConsole(const bool output) {
@@ -38,5 +40,11 @@ class SerialConsole {
       }
     }
 };
+
+#ifdef CONSOLE_OUTPUT
+SerialConsole console(CONSOLE_OUTPUT);
+#else
+SerialConsole console(false);
+#endif
 
 #endif

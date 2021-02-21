@@ -16,7 +16,7 @@ class SerialConnection {
     uint _bufferlen;
     long unsigned int _baud;
     unsigned int _timeout;
-    HardwareSerial &_serial; 
+    HardwareSerial &_serial;
   public:
     SerialConnection(HardwareSerial &serial,
                      byte *buffer,
@@ -45,7 +45,9 @@ class SerialConnection {
       uint readlen = 0;
       readlen = _serial.readBytes(_buffer, _bufferlen);
       if (readlen > 0) {
-        console.printf(" Serial read: %d bytes (CRC: %ul)\n",readlen,crc32(_buffer, readlen));
+#ifdef HAS_CONSOLE
+        console.printf(" Serial read: %d bytes (CRC: %ul)\n", readlen, crc32(_buffer, readlen));
+#endif
         length = readlen;
         buffer = _buffer;
         return true;
@@ -53,14 +55,17 @@ class SerialConnection {
       return false;
     };
     void write(const byte *buffer, const uint length) {
-      console.printf("Serial write: %u bytes (CRC: %ul)\n",length,crc32(buffer, length));
+#ifdef HAS_CONSOLE
+      console.printf("Serial write: %u bytes (CRC: %ul)\n", length, crc32(buffer, length));
+#endif
       _serial.write(buffer, length);
     };
     void xon() {
-      _serial.write(&XON,1);
+      _serial.write(&XON, 1);
     };
     void xoff() {
-      _serial.write(&XOFF,1);
+      _serial.write(&XOFF, 1);
     };
 };
+
 #endif

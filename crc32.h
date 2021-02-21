@@ -31,8 +31,8 @@ uint8_t getbyte(unsigned long a, uint8_t b) {
 
 uint8_t crc32byte(const uint8_t *buffer, const int len, const uint8_t index) {
   assert (index <= 3);
-  unsigned long crc = crc32(buffer,len);
-  return getbyte(crc,index);
+  unsigned long crc = crc32(buffer, len);
+  return getbyte(crc, index);
 }
 
 #endif
