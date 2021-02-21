@@ -2,7 +2,7 @@
 // Creates global blinker variable
 #include "blinker.h"
 
-// Creates global console variable for other classes to use. 
+// Creates global console variable for other classes to use.
 // output if CONSOLE_OUTPUT is true
 #define CONSOLE_OUTPUT true
 #include "console.h"
@@ -38,10 +38,16 @@ MultiMessageReliableRFM95Link radio(
 void setup() {
 
   // Initialize the console
+#ifdef HAS_CONSOLE
   console.initialize();
+#endif
 
+#ifdef HAS_CONSOLE
   console.printf("Program: %s\n", __FILE__);
+#ifdef HAS_NODEID
   console.printf("My ID %d, Other ID %d\n", nodeid.me(), nodeid.them());
+#endif
+#endif
 
   // initialze the serial connection with RPi
   rpi.initialize();
@@ -58,8 +64,10 @@ void setup() {
   radio.message_size(MSGSIZE);
   radio.initialize();
 
+#ifdef HAS_BLINKER
   // Blink the LED three times
   blinker.blink(3);
+#endif
 
 }
 
@@ -80,7 +88,10 @@ bool datatosend = false;
 uint frameindex = 0;
 
 void loop() {
+  
+#ifdef HAS_BLINKER
   blinker.update();
+#endif
 
   if (radio.receive(rpiwritebuf, rpiwritelen)) {
     rpi.write(rpiwritebuf, rpiwritelen);

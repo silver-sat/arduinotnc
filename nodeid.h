@@ -6,6 +6,8 @@
 #include <EEPROM.h>
 #include "types.h"
 
+#define HAS_NODEID
+
 class NodeID {
   private:
     byte _me;

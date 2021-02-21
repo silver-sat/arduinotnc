@@ -45,12 +45,12 @@ class KISSFrames {
           _start[frameno] = frstart;
           _length[frameno] = frlen;
           frameno += 1;
-#ifdef SERIAL_CONSOLE
+#ifdef HAS_CONSOLE
           console.printf("Frame %d: start %d %0x %0x len %d %0x\n", frameno, frstart, buffer[frstart], (buffer[frstart + 1] & 0x0F), frlen, buffer[frend - 1]);
 #endif
         } else {
-#ifdef SERIAL_CONSOLE
-          console->printf("Frame X: start %d %0x %0x len %d %0x\n", frstart, buffer[frstart], (buffer[frstart + 1] & 0x0F), frlen, buffer[frend - 1]);
+#ifdef HAS_CONSOLE
+          console.printf("Frame X: start %d %0x %0x len %d %0x\n", frstart, buffer[frstart], (buffer[frstart + 1] & 0x0F), frlen, buffer[frend - 1]);
 #endif
         }
         // find next (start) FEND (starting with previous end FEND)
