@@ -12,16 +12,16 @@
 #define RADIO_SEND_ACK_TIMEOUT   50
 #define RADIO_RECEIVE_TIMEOUT	   5
 
-#define MTU 512
-#define MAX_KISS_FRAME (MTU+64)
-#define MSGSIZE		200
+#define MTU 522
+#define MAX_KISS_FRAME (MTU+18)
+#define MSGSIZE		180
 #define MAX_ATTEMPTS 10
 
 #define RPIWRITEBUFFERSIZE MAX_KISS_FRAME
 
-#define SEND_DELAY         100
+#define SEND_DELAY         50
 #define SEND_FAIL_DELAY    250
-#define RECEIVE_DELAY      200
-#define INTERFRAME_DELAY   100
+#define RECEIVE_DELAY      100
+#define INTERFRAME_DELAY   50
 
 #endif

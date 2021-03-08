@@ -42,7 +42,7 @@ class Timer {
     }
 
     void random_wait(duration period) {
-      this->random_wait(period, 2 * period);
+      this->random_wait(period, 2*period);
     }
 };
 

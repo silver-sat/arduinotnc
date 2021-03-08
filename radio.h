@@ -16,9 +16,9 @@ class RadioLink {
   protected:
     float _freq;
     uint _power;
-    uint _receive_timeout;
-    uint _send_delay;
-    uint _receive_delay;
+    ulong _receive_timeout;
+    duration _send_delay;
+    duration _receive_delay;
     Timer _send_timer;
 
   public:
@@ -36,14 +36,14 @@ class RadioLink {
     void power(uint p) {
       _power = p;
     };
-    void receive_timeout(uint timeout) {
+    void receive_timeout(ulong timeout) {
       _receive_timeout = timeout;
     };
-    void send_delay(uint delay) {
-      _send_delay = delay;
+    void send_delay(duration d) {
+      _send_delay = d;
     };
-    void receive_delay(uint delay) {
-      _receive_delay = delay;
+    void receive_delay(duration d) {
+      _receive_delay = d;
     };
     Timer & send_timer() {
       return _send_timer;
@@ -53,7 +53,7 @@ class RadioLink {
 class ReliableRadioLink: public RadioLink {
   protected:
     uint _send_ack_timeout;
-    uint _send_fail_delay;
+    duration _send_fail_delay;
     byte _myid;
     byte _otherid;
     uint _max_attempts;
@@ -74,7 +74,7 @@ class ReliableRadioLink: public RadioLink {
     void send_ack_timeout(uint timeout) {
       _send_ack_timeout = timeout;
     };
-    void send_fail_delay(uint delay) {
+    void send_fail_delay(duration delay) {
       _send_fail_delay = delay;
     };
     void max_attempts(uint attempts) {
@@ -91,7 +91,7 @@ class ReliableRadioLink: public RadioLink {
 class MultiMessageReliableRadioLink: public ReliableRadioLink {
   protected:
     uint _msg_size;
-    uint _last_msg_delay;
+    duration _last_msg_delay;
   public:
     MultiMessageReliableRadioLink() {
       _msg_size = 200;
@@ -100,7 +100,7 @@ class MultiMessageReliableRadioLink: public ReliableRadioLink {
     void message_size(uint s) {
       _msg_size = s;
     };
-    void last_msg_delay(uint delay) {
+    void last_msg_delay(duration delay) {
       _last_msg_delay = delay;
     };
 };
@@ -121,14 +121,14 @@ class MultiMessageReliableRFM95Link: public MultiMessageReliableRadioLink {
     // details of current send data-packet
     const byte *_sendbuffer;
     uint _sendbuflen;
-    uint _sentpackets;
+    ulong _sentpackets;
 
     // details of current send messages
-    byte _sendmsgind;
-    byte _sendmsgatt;
+    uint _sendmsgind;
+    uint _sendmsgatt;
 
     // details of current messages received
-    byte _recvmsgind;
+    uint _recvmsgind;
     byte _recvmsgid;
     byte _recvdatid;
     bool _recvdat;
@@ -174,6 +174,7 @@ class MultiMessageReliableRFM95Link: public MultiMessageReliableRadioLink {
       _sentpackets = 0;
       _sendbuffer = 0;
       _recvdat = false;
+      _recvmsgind = 0;
 
 #ifdef HAS_CONSOLE
       console.printf("Radio ready.\n");
@@ -187,17 +188,25 @@ class MultiMessageReliableRFM95Link: public MultiMessageReliableRadioLink {
     }
 
     bool receive(byte* &buffer, uint &length) {
-      byte *radiobuf = _buffer + _recvmsgind * _msg_size;
-      byte radiolen;
+      uint usedbytes = _recvmsgind*_msg_size;
+      byte *radiobuf = _buffer + usedbytes;
+      byte radiolen = _msg_size;
+      if ((_bufferlen-usedbytes) < radiolen) {
+        radiolen = (byte)(_bufferlen-usedbytes);
+      }
       byte radioflags;
       if (recv_msg(radiobuf, radiolen, radioflags)) {
         bool retval = false;
         bool first = (radiobuf[0] == FEND);
-        bool last = (radiobuf[radiolen - 1] == FEND);
+        bool last = ((radiobuf[radiolen - 1] == FEND) || (radiolen < _msg_size));
         byte datid = (radioflags >> 2) & 0x03;
         byte msgid = (radioflags & 0x03);
 #ifdef HAS_CONSOLE
-        console.printf("Received %d-%d (%d-%d) len %d first %d last %d\n", datid, msgid, _recvdatid, _recvmsgid, radiolen, 1 * first, 1 * last);
+        if (_recvdat) {
+          console.printf("Received %d-%d (%d-%d) len %d first %d last %d\n", datid, msgid, _recvdatid, _recvmsgid, radiolen, 1 * first, 1 * last);
+        } else {
+          console.printf("Received %d-%d (x-x) len %d first %d last %d\n", datid, msgid, radiolen, 1 * first, 1 * last);
+        }
 #endif
         if (first || !_recvdat || (!_recvdat && datid != _recvdatid)) {
           if (_recvdat) {
@@ -207,7 +216,6 @@ class MultiMessageReliableRFM95Link: public MultiMessageReliableRadioLink {
           }
           _recvdat = true;
           _recvdatid = datid;
-          _recvmsgind = 0;
           _recvmsgid = (_recvmsgind & 0x03);
         }
         if (datid == _recvdatid && msgid == _recvmsgid) {
@@ -218,6 +226,7 @@ class MultiMessageReliableRFM95Link: public MultiMessageReliableRadioLink {
             buffer = _buffer;
             length = _recvmsgind * _msg_size + radiolen;
             _recvdat = false;
+            _recvmsgind = 0;
             retval = true;
           }
         } else {
@@ -227,6 +236,7 @@ class MultiMessageReliableRFM95Link: public MultiMessageReliableRadioLink {
           _recvdat = false;
         }
         // Delay any other sends to give a chance for more radio messages
+        // console.printf("receive_delay %lu\n",_receive_delay);
         _send_timer.wait(_receive_delay);
         return retval;
       } else if (_sendbuffer != 0 && _send_timer.ready()) {
@@ -259,15 +269,15 @@ class MultiMessageReliableRFM95Link: public MultiMessageReliableRadioLink {
             _sendbuffer = 0;
             _send_timer.wait(_last_msg_delay);
           }
-          _send_timer.random_wait(_send_fail_delay * pow(2, _sendmsgatt));
+          _send_timer.random_wait(min(10000,_send_fail_delay*pow(2, _sendmsgatt)));
         }
       }
       return false;
     };
 
     bool recv_msg(byte* radiobuf, byte &radiolen, byte &radioflags) {
-      radiolen = _msg_size; // what about the last message?
-      radioflags = 0;
+      // radiolen = _msg_size; // what about the last message?
+      // radioflags = 0;
       if (_radio->recvfromAckTimeout(radiobuf, &radiolen, _receive_timeout) && radiolen > 0) {
         radioflags = _radio->headerFlags();
 #ifdef HAS_CONSOLE
@@ -297,6 +307,7 @@ class MultiMessageReliableRFM95Link: public MultiMessageReliableRadioLink {
       _sendbuflen = length;
       _sendmsgind = 0;
       _sendmsgatt = 0;
+      _send_timer.wait(_send_delay);
     };
 
     bool ready() {
