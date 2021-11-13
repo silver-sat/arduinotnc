@@ -27,7 +27,7 @@ SerialConnection rpi(
 
 #include "radio.h"
 byte rpiradiobuf[RPIWRITEBUFFERSIZE];
-MultiMessageReliableRFM95Link radio(
+MultiMessageRadioLink radio(
   rpiradiobuf,
   RPIWRITEBUFFERSIZE);
 
@@ -53,16 +53,26 @@ void setup() {
   rpi.initialize();
 
   // Setup the radio - specific to the type of radio link...
-  radio.frequency(RADIO_FREQ);
-  radio.power(RADIO_POWER);
-  radio.receive_timeout(RADIO_RECEIVE_TIMEOUT);
+  RFM95_RadioLink *link = new RFM95_RadioLink();
+  link->frequency(RADIO_FREQ);
+  link->power(RADIO_POWER);
+  link->receive_timeout(RADIO_RECEIVE_TIMEOUT);
+  link->initialize();
+  
+  UnreliableDatagramLink *datagram = new UnreliableDatagramLink();
+  datagram->initialize(*link);
+
+  // ReliableDatagramLink *datagram = new ReliableDatagramLink();
+  // datagram->send_ack_timeout(RADIO_SEND_ACK_TIMEOUT);
+  // datagram->initialize(*link);
+  
   radio.send_delay(SEND_DELAY);
   radio.receive_delay(RECEIVE_DELAY);
-  radio.send_ack_timeout(RADIO_SEND_ACK_TIMEOUT);
-  radio.send_fail_delay(SEND_FAIL_DELAY);
-  radio.max_attempts(MAX_ATTEMPTS);
+  // radio.send_fail_delay(SEND_FAIL_DELAY);
+  // radio.max_attempts(MAX_ATTEMPTS);
+  radio.last_msg_delay(INTER_FRAME_DELAY);
   radio.message_size(MSGSIZE);
-  radio.initialize();
+  radio.initialize(*datagram);
 
 #ifdef HAS_BLINKER
   // Blink the LED three times
