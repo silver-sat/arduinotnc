@@ -12,8 +12,8 @@
 // #define RADIO_SEND_ACK_TIMEOUT   50
 #define RADIO_RECEIVE_TIMEOUT	   5
 
-#define MTU 962
-#define MAX_KISS_FRAME (MTU+38)
+#define MTU 960
+#define MAX_KISS_FRAME (MTU+40)
 #define MSGSIZE		250
 // #define MAX_ATTEMPTS 10
 

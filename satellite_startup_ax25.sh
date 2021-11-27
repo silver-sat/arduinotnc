@@ -11,7 +11,7 @@ echo -n "Now: "; date
 # Commands at boot for bridge raspberry pi: Bridge is 192.168.100.101
 # Connected raspberry pi is 192.168.100.102
 
-MTU=962
+MTU=960
 kissattach -m $MTU -l /dev/serial0 serial 192.168.100.102
 ifconfig ax0 txqueuelen 3
 # echo    5000 > /proc/sys/net/ipv4/neigh/ax0/retrans_time_ms
