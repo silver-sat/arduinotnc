@@ -5,8 +5,8 @@
 # % ln -s satellite_startup_ax25.sh .startup.sh
 #
 set -x
-uptime -s
-date
+echo -n "Up since: "; uptime -s
+echo -n "Now: "; date
 
 # Commands at boot for bridge raspberry pi: Bridge is 192.168.100.101
 # Connected raspberry pi is 192.168.100.102
@@ -20,7 +20,7 @@ ifconfig ax0 pointopoint 192.168.100.101
 ifconfig ax0 -arp
 arp -H ax25 -s 192.168.100.101 MYCALL-8
 
-sleep 5
+axlisten ax0 -a -r -t >/home/pi/ax0.log 2>&1 &
 
 # Remove the default route via wlan0 if it is there, continue if not
 
@@ -36,15 +36,19 @@ route add default gw 192.168.100.101 ax0
 
 # ntpdate-debian
 # set our clock based on the time-server on the bridge rpi
-# ntpdate -u 192.168.100.101
+echo -n "Up since: "; uptime -s
+echo -n "Now: "; date
+ntpdate -u 192.168.100.101
+echo -n "Up since: "; uptime -s
+echo -n "Now: "; date
 
 # Use: touch /home/pi/.dopayload to execute payload.sh at next reboot. 
 if [ -f /home/pi/.dopayload ]; then
   rm -f /home/pi/.dopayload
-  uptime -s
-  date
+  echo -n "Up since: "; uptime -s
+  echo -n "Now: "; date
   runuser -u pi /home/pi/payload.sh > /home/pi/payload.log 2>&1
-  uptime -s
-  date
+  echo -n "Up since: "; uptime -s
+  echo -n "Now: "; date
   shutdown now
 fi
