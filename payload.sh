@@ -1,8 +1,8 @@
 #!/bin/sh
 
 cd /home/pi
-uptime -s
-date
+echo -n "Up since: "; uptime -s
+echo -n "Now: "; date
 ./tweetpic.py ./overhead.jpg
-uptime -s
-date
+echo -n "Up since: "; uptime -s
+echo -n "Now: "; date
