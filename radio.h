@@ -120,8 +120,16 @@ class DatagramLink: virtual public BaseLink {
   protected:
     byte _myid;
     byte _otherid;
+    unsigned long int _totalrecvbytes;
+    unsigned long int _totalrecvmsg;
+    unsigned long int _totalsendbytes;
+    unsigned long int _totalsendmsg;
   public:
     DatagramLink() {
+      _totalsendmsg = 0;
+      _totalsendbytes = 0;
+      _totalrecvmsg = 0;
+      _totalrecvbytes = 0;
 #ifdef HAS_NODEID
       _myid = nodeid.me();
       _otherid = nodeid.them();
@@ -156,11 +164,16 @@ class UnreliableDatagramLink: virtual public DatagramLink  {
       int32_t timeLeft;
       while ((timeLeft = timeout - (millis() - starttime)) > 0) {
         if (_radio->waitAvailableTimeout(timeLeft)) {
+          #ifdef HAS_CONSOLE
+            console.printf("Radio to recv, available\n");
+          #endif
           if (_radio->recvfrom(buffer, &length)) {
             flags = _radio->headerFlags();
             if (length > 0) {
+              _totalrecvmsg += 1;
+              _totalrecvbytes += length;
               #ifdef HAS_CONSOLE
-                console.printf("Radio received: %d bytes, flags %d\n", length, flags);
+                console.printf("Radio received: %d bytes, flags %d, total %lu/%lu\n", length, flags, _totalrecvbytes, _totalrecvmsg);
               #endif
               return true;
             } else {
@@ -174,10 +187,15 @@ class UnreliableDatagramLink: virtual public DatagramLink  {
     }
     bool send_msg(const byte *buffer, const byte length, byte flags = 0) {
       _radio->setHeaderFlags(flags, 0x0F);
+      #ifdef HAS_CONSOLE
+      console.printf("Radio sending: %d bytes, flags %d\n", length, flags);
+      #endif
       _radio->sendto((byte *)buffer, length, _otherid);
       _radio->waitPacketSent();
+      _totalsendmsg += 1;
+      _totalsendbytes += length;
       #ifdef HAS_CONSOLE
-      console.printf("Radio send: %d bytes, flags %d\n", length, flags);
+      console.printf("Radio send: %d bytes, flags %d, total %lu/%lu\n", length, flags, _totalsendbytes, _totalsendmsg);
       #endif
       return true;
     }
