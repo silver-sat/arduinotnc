@@ -73,7 +73,7 @@ The two RPis will be called bridge, with IP address 192.168.100.101 and callsign
 ```
 9. Copy the example image
 ```
-% cp arduinotnc/*.jpg .
+% cp arduinotnc/overhead.jpg .
 ```
 10. Reboot and re-login
 ```
