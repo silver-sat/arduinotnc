@@ -29,9 +29,14 @@ The two RPis will be called bridge, with IP address 192.168.100.101 and callsign
 ```
 % cp arduinotnc/stunnel.conf stunnel.conf
 ```
-8. Reboot && then re-login
+8. Reboot and re-login
 ```
 % sudo reboot
+```
+9. Watch the AX25 packets go by!
+```
+% cd ~
+% tail -f ax0.log
 ```
 
 ## Satellite Setup
