@@ -16,7 +16,7 @@ kissattach -m $MTU -l /dev/serial0 serial 192.168.100.102
 ifconfig ax0 txqueuelen 3
 # echo    5000 > /proc/sys/net/ipv4/neigh/ax0/retrans_time_ms
 # echo 1200000 > /proc/sys/net/ipv4/neigh/ax0/base_reachable_time_ms
-ifconfig ax0 pointopoint 192.168.100.101
+# ifconfig ax0 pointopoint 192.168.100.101
 ifconfig ax0 -arp
 arp -H ax25 -s 192.168.100.101 MYCALL-8
 
