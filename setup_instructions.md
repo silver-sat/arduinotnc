@@ -1,6 +1,6 @@
 # Setup instructions for Raspberry PIs
 
-The two RPis will be called bridge, with IP address 192.168.100.101, and satellite, with IP address 192.168.100.102.
+The two RPis will be called bridge, with IP address 192.168.100.101, and satellite, with IP address 192.168.100.102. The bridge RPi will need to be connected, by WiFi to the "internet". 
 
 ## Bridge Setup
 
@@ -21,9 +21,17 @@ The two RPis will be called bridge, with IP address 192.168.100.101, and satelli
 ```
 % cp arduinotnc/bridge_startup_ax25.sh .startup.sh
 ```
-6. Copy the [stunnel.conf](stunnel.conf) file to `stunnel.conf`
+6. Append the [axports](axports) file to `/etc/ax25/axports`
+```
+% sudo cat arduinotnc/bridge-axports >> /etc/ax25/axports
+```
+7. Copy the [stunnel.conf](stunnel.conf) file to `stunnel.conf`
 ```
 % cp arduinotnc/stunnel.conf stunnel.conf
+```
+8. Reboot && then re-login
+```
+% sudo reboot
 ```
 
 ## Satellite Setup
@@ -45,17 +53,29 @@ The two RPis will be called bridge, with IP address 192.168.100.101, and satelli
 ```
 % cp arduinotnc/satellite_startup_ax25.sh .startup.sh
 ```
-6. Copy the Python files
+6. Append the [axports](axports) file to `/etc/ax25/axports`
+```
+% sudo cat arduinotnc/satellite-axports >> /etc/ax25/axports
+```
+7. Copy the Python files
 ```
 % cp arduinotnc/*.py .
 ```
-7. Rename the twitter credentials file and then edit to insert the necessary credentials.
+8. Rename the twitter credentials file and then edit to insert the necessary credentials.
 ```
 % mv twittercred.empty.py twittercred.py
 % nano twittercred.py
 ```
-8. Copy the example image
+9. Copy the example image
 ```
 % cp arduinotnc/*.jpg .
 ```
-9. 
+10. Reboot and re-login
+```
+% sudo reboot
+```
+11. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
+```
+% cd ~
+% python3 tweetpic.py overhead.jpg
+```
