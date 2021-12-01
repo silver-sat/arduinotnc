@@ -21,9 +21,9 @@ The two RPis will be called bridge, with IP address 192.168.100.101 and callsign
 ```
 % cp arduinotnc/bridge_startup_ax25.sh .startup.sh
 ```
-6. Append the [axports](axports) file to `/etc/ax25/axports`
+6. Append the [bridge_axports](bridge_axports) file to `/etc/ax25/axports`
 ```
-% sudo cat arduinotnc/bridge-axports >> /etc/ax25/axports
+% sudo cat arduinotnc/bridge_axports >> /etc/ax25/axports
 ```
 7. Copy the [stunnel.conf](stunnel.conf) file to `stunnel.conf`
 ```
@@ -58,9 +58,9 @@ The two RPis will be called bridge, with IP address 192.168.100.101 and callsign
 ```
 % cp arduinotnc/satellite_startup_ax25.sh .startup.sh
 ```
-6. Append the [axports](axports) file to `/etc/ax25/axports`
+6. Append the [satellite_axports](satellite_axports) file to `/etc/ax25/axports`
 ```
-% sudo cat arduinotnc/satellite-axports >> /etc/ax25/axports
+% sudo cat arduinotnc/satellite_axports >> /etc/ax25/axports
 ```
 7. Copy the Python files
 ```
