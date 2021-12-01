@@ -1,6 +1,6 @@
 # Setup instructions for Raspberry PIs
 
-The two RPis will be called bridge, with IP address 192.168.100.101, and satellite, with IP address 192.168.100.102. The bridge RPi will need to be connected, by WiFi to the "internet". 
+The two RPis will be called bridge, with IP address 192.168.100.101 and callsign MYCALL-8, and satellite, with IP address 192.168.100.102 and callsign MYCALL-9. The bridge RPi will need to be connected by WiFi to the internet.
 
 ## Bridge Setup
 
