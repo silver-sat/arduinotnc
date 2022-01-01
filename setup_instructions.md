@@ -10,7 +10,7 @@ The two RPis will be called bridge, with IP address 192.168.100.101 and callsign
 ```
 2. Install the necessary software to the RPi
 ```
-% sudo apt-get install git ntp stunnel ax25-tools ntpdate
+% sudo apt-get install git ntp stunnel4 ax25-tools
 ```
 3. Add the contents of the file [place_at_end_of_etc_rc.local](place_at_end_of_etc_rc.local) at the end of `/etc/rc.local`
 4. Download all the repository files
@@ -47,7 +47,8 @@ The two RPis will be called bridge, with IP address 192.168.100.101 and callsign
 ```
 2. Install the necessary software to the RPi
 ```
-% sudo apt-get install git ntp stunnel ax25-tools ntpdate
+% sudo apt-get install git stunnel ax25-tools ntpdate
+% sudo apt-get remove ntp
 ```
 3. Add the contents of the file [place_at_end_of_etc_rc.local](place_at_end_of_etc_rc.local) at the end of `/etc/rc.local`
 4. Download all the repository files
