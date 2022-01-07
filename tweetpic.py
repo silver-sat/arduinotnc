@@ -18,6 +18,10 @@ def tominsec(s):
 httpsproxy = True
 doverify = False
 
+msg = "IP over radio (KISS + AX25 -> serial -> arduino -> radio)"
+if len(sys.argv) > 2:
+    msg = sys.argv[2]
+
 if httpsproxy:
     twitter = Twitter(
         consumer_key,
@@ -58,7 +62,7 @@ if len(sys.argv) > 1:
     
     start2 = time.time()
     print("Send status...")
-    message = "[%s] Twitter image post, IP over radio! Image size %.0fK, upload time %s, bytes/sec %.0f"%(datetime.datetime.now().ctime(),os.path.getsize(sys.argv[1])/1024,tominsec(finish1-start1),os.path.getsize(sys.argv[1])/(finish1-start1))
+    message = "[%s] Twitter image post, %s! Image size %.0fK, upload time %s, bytes/sec %.0f"%(datetime.datetime.now().ctime(),msg,os.path.getsize(sys.argv[1])/1024,tominsec(finish1-start1),os.path.getsize(sys.argv[1])/(finish1-start1))
     repsonse = twitter.update_status(status=message, media_ids=[response['media_id']])
     # print(json.dumps(response,indent=2))
     # print("Response size:",len(response))
@@ -68,7 +72,7 @@ else:
 
     start2 = time.time()
     print("Send status...")
-    message = "[%s] Twitter text post, IP over radio!"%(datetime.datetime.now().ctime())
+    message = "[%s] Twitter text post, %s!"%(datetime.datetime.now().ctime(),msg)
     repsonse = twitter.update_status(status=message)
     # print(json.dumps(response,indent=2))
     # print("Response size:",len(response))

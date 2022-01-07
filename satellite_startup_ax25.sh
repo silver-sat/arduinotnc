@@ -4,25 +4,50 @@
 # % rm -f .startup.sh
 # % ln -s satellite_startup_ax25.sh .startup.sh
 #
-set -x
+# Altenatively, you can run it manually if /etc/rc.local is not setup.
+# % sudo sh .startup.sh >& .startup.log
+#
+
 echo -n "Up since: "; uptime -s
+
+if [ -e /sys/class/net/eth1/operstate ]; then
+
+  echo -n "Now: "; date
+
+  # Set up virtual serial port for virtual raspberry pi
+  # change 192.254.192.195 to be the address of the "internal" virtual 
+  # box interface (eth1) on the other raspberry pi (virtual bridge)
+
+  BRIDGE_ETH1_IP=169.254.192.195
+  BAUD=115200
+ 
+  until ping -n -c 1 ${BRIDGE_ETH1_IP} >/dev/null 2>&1; do
+    sleep 5
+  done
+
+  socat pty,link=/dev/serial0,rawer,ispeed=${BAUD},ospeed=${BAUD},b${BAUD} tcp:${BRIDGE_ETH1_IP}:8000,retry=11,interval=5 &
+
+  until [ -e /dev/serial0 ]; do
+    sleep 5
+  done
+
+fi
+
 echo -n "Now: "; date
 
-# Commands at boot for bridge raspberry pi: Bridge is 192.168.100.101
-# Connected raspberry pi is 192.168.100.102
+# Commands at boot for satellite raspberry pi: 
+# GS/Bridge is 192.168.100.101
+# Satellite is 192.168.100.102
 
 MTU=960
 kissattach -m $MTU -l /dev/serial0 serial 192.168.100.102
 ifconfig ax0 txqueuelen 3
-# echo    5000 > /proc/sys/net/ipv4/neigh/ax0/retrans_time_ms
-# echo 1200000 > /proc/sys/net/ipv4/neigh/ax0/base_reachable_time_ms
-# ifconfig ax0 pointopoint 192.168.100.101
 ifconfig ax0 -arp
 arp -H ax25 -s 192.168.100.101 MYCALL-8
 
-axlisten ax0 -a -r -t >/home/pi/ax0.log 2>&1 &
+axlisten ax0 -a -r -t >/home/pi/.ax0.log 2>&1 &
 
-# Remove the default route via wlan0 if it is there, continue if not
+# Remove the default route if it is there, continue if not
 
 route del default || true
 
@@ -34,21 +59,21 @@ route add default gw 192.168.100.101 ax0
 
 # ping -n -c 1 192.168.100.101 && rfkill block wifi
 
-# ntpdate-debian
 # set our clock based on the time-server on the bridge rpi
-echo -n "Up since: "; uptime -s
+# Note, have to allow 192.168.100.102 in /etc/ntp.conf on bridge rpi
+
 echo -n "Now: "; date
+
 ntpdate -u 192.168.100.101
+
 echo -n "Up since: "; uptime -s
 echo -n "Now: "; date
 
 # Use: touch /home/pi/.dopayload to execute payload.sh at next reboot. 
 if [ -f /home/pi/.dopayload ]; then
   rm -f /home/pi/.dopayload
-  echo -n "Up since: "; uptime -s
   echo -n "Now: "; date
   runuser -u pi /home/pi/payload.sh > /home/pi/payload.log 2>&1
-  echo -n "Up since: "; uptime -s
   echo -n "Now: "; date
   shutdown now
 fi
