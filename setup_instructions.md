@@ -36,7 +36,7 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 % sudo sed -i -e '$r arduinotnc/bridge_axports' /etc/ax25/axports
 ```
-8. Link the [arduinotnc/rotatemap.conf](rotatemap.conf) file to `.rotatemap.conf`
+8. Fix permissions of file [arduinotnc/rotatemap.conf](rotatemap.conf) and link to `.rotatemap.conf`
 ```
 % sudo chown root.root arduinotnc/rotatemap.conf
 % sudo ln -s arduinotnc/rotatemap.conf .rotatemap.conf
