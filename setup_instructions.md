@@ -45,27 +45,19 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 % ln -s arduinotnc/stunnel.conf .stunnel.conf
 ```
-10. Link the [arduinotnc/slowsocat.sh](slowsocat.sh) file to `.slowsocat.sh` (\*)
-```
-% ln -s arduinotnc/slowsocat.sh .slowsocat.sh
-```
-11. Link the [arduinotnc/throttle.py](throttle.py) file to `.throttle.py` (\*)
-```
-% ln -s arduinotnc/throttle.py .throttle.py
-```
-12. Allow the satellite raspberry pi to access the current time from the NTP server
+10. Allow the satellite raspberry pi to access the current time from the NTP server
 ```
 % echo "restrict 192.168.100.0 mask 255.255.255.0" | sudo sed -e '/#restrict 192.168.123.0/r /dev/stdin' -i /etc/ntp.conf
 ```
-13. Write down the internal network interface IP address (second line, after `inet`). Should be of the form `169.254.???.???`. (\*)
+11. Write down the internal network interface IP address (second line, after `inet`). Should be of the form `169.254.???.???`. (\*)
 ```
 % ifconfig eth1
 ```
-14. Reboot and re-login
+12. Reboot and re-login
 ```
 % sudo reboot
 ```
-15. Watch the AX25 packets go by!
+13. Watch the AX25 packets go by!
 ```
 % cd ~
 % tail -f .ax0.log
@@ -107,38 +99,47 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 % sudo chown root.root arduinotnc/rotatemap.conf
 % sudo ln -s arduinotnc/rotatemap.conf .rotatemap.conf
 ```
-9. Create the twitter credentials file:
+9. Link the [arduinotnc/slowsocat.sh](slowsocat.sh) file to `.slowsocat.sh` (\*)
+```
+% ln -s arduinotnc/slowsocat.sh .slowsocat.sh
+```
+10. Link the [arduinotnc/throttle.py](throttle.py) file to `.throttle.py` (\*)
+```
+% ln -s arduinotnc/throttle.py .throttle.py
+```
+11. Create the twitter credentials file:
 ```
 % cp arduinotnc/twittercred.empty.py arduinotnc/twittercred.py 
 ```
-10. Edit arduinotnc/twittercred.py to add Twitter credentials.
+12. Edit arduinotnc/twittercred.py to add Twitter credentials.
 ```
 % nano arduinotnc/twittercred.py
 ```
-11. Link the Python files
+13. Link the Python files
 ```
 % ln -s arduinotnc/tweetpic.py 
 % ln -s arduinotnc/twitterproxy.py
 % ln -s arduinotnc/twittercred.py
 ```
-9. Link the example image
+14. Link the example image
 ```
 % ln -s arduinotnc/overhead.jpg
 ```
-10. Link the payload driver script
+15. Link the payload driver script
 ```
 % ln -s arduinotnc/payload.sh
 ```
-11. Fix the bridge internal network interface IP address. Edit `.startup.sh`, find `BRIDGE_ETH1_IP=` and change the IP address to that from step 13 of the bridge setup. (\*).
+16. Fix the bridge internal network interface IP address. Edit `.startup.sh`, find `BRIDGE_ETH1_IP=` and change the IP address to that from step 13 of the bridge setup. (\*).
 ```
 % nano .startup.sh
 ```
-12. Reboot and re-login
+17. Reboot and re-login
 ```
 % sudo reboot
 ```
-13. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
+18. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
 ```
 % cd ~
 % ./payload.sh
 ```
+19. Look for the [result](https://twitter.com/NathanE15158060).
