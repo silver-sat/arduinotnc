@@ -1,6 +1,8 @@
 # Setup instructions for Raspberry PIs
 
-The two RPis will be called bridge, with IP address 192.168.100.101 and callsign MYCALL-8, and satellite, with IP address 192.168.100.102 and callsign MYCALL-9. The bridge RPi will need to be connected by WiFi to the internet. Instructions marked with a (\*) are only necessary for the virtual raspberry pi setup. 
+The two RPis will be called bridge, with IP address 192.168.100.101 and callsign MYCALL-8, and satellite, with IP address 192.168.100.102 and callsign MYCALL-9. The bridge RPi will need to be connected by WiFi to the internet. 
+
+Instructions marked with a (\*) are only necessary for the virtual raspberry pi setup. The internet on the virtual raspberry pi will come from the host computer (which may be connected to WiFi or ethernet cable) but will appear as ethernet (hardwired) to the virtual machine. 
 
 ## Bridge Setup
 
