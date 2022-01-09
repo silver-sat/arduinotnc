@@ -38,7 +38,7 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 8. Link the [arduinotnc/rotatemap.conf](rotatemap.conf) file to `.rotatemap.conf`
 ```
-% ln -s arduinotnc/rotatemap.conf .rotatemap.conf
+% sudo ln -s arduinotnc/rotatemap.conf .rotatemap.conf
 ```
 9. Link the [arduinotnc/stunnel.conf](stunnel.conf) file to `.stunnel.conf`
 ```
