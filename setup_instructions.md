@@ -121,20 +121,24 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 % ln -s arduinotnc/twitterproxy.py
 % ln -s arduinotnc/twittercred.py
 ```
-9. Copy the example image
+9. Link the example image
 ```
-% ln -s arduinotnc/overhead.jpg .
+% ln -s arduinotnc/overhead.jpg
 ```
-10. Fix the bridge internal network interface IP address. Edit `.startup.sh`, find `BRIDGE_ETH1_IP=` and change the IP address to that from step 13 of the bridge setup. (\*).
+10. Link the payload driver script
+```
+% ln -s arduinotnc/payload.sh
+```
+11. Fix the bridge internal network interface IP address. Edit `.startup.sh`, find `BRIDGE_ETH1_IP=` and change the IP address to that from step 13 of the bridge setup. (\*).
 ```
 % nano .startup.sh
 ```
-11. Reboot and re-login
+12. Reboot and re-login
 ```
 % sudo reboot
 ```
-12. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
+13. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
 ```
 % cd ~
-% python3 tweetpic.py overhead.jpg
+% ./payload.sh
 ```
