@@ -28,31 +28,35 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 % sudo sed -e '$r /dev/stdin' -e '/exit 0/d' -i /etc/rc.local < arduinotnc/place_at_end_of_etc_rc.local
 ```
-6. Link the [bridge_startup_ax25.sh](arduinotnc/bridge_startup_ax25.sh) file to `.startup.sh`
+6. Link the [arduinotnc/bridge_startup_ax25.sh](bridge_startup_ax25.sh) file to `.startup.sh`
 ```
 % ln -s arduinotnc/bridge_startup_ax25.sh .startup.sh
 ```
-7. Append the [bridge_axports](arduinotnc/bridge_axports) file to `/etc/ax25/axports`
+7. Append the [arduinotnc/bridge_axports](bridge_axports) file to `/etc/ax25/axports`
 ```
-% sudo cat arduinotnc/bridge_axports >> /etc/ax25/axports
+% sudo sed -i -e '$r arduinotnc/bridge_axports' /etc/ax25/axports
 ```
-8. Link the [stunnel.conf](arduinotnc/stunnel.conf) file to `.stunnel.conf`
+8. Link the [arduinotnc/rotatemap.conf](rotatemap.conf) file to `.rotatemap.conf`
+```
+% ln -s arduinotnc/rotatemap.conf .rotatemap.conf
+```
+9. Link the [arduinotnc/stunnel.conf](stunnel.conf) file to `.stunnel.conf`
 ```
 % ln -s arduinotnc/stunnel.conf .stunnel.conf
 ```
-9. Link the [slowsocat.sh](arduinotnc/slowsocat.sh) file to `.slowsocat.sh` (\*)
+10. Link the [arduinotnc/slowsocat.sh](slowsocat.sh) file to `.slowsocat.sh` (\*)
 ```
 % ln -s arduinotnc/slowsocat.sh .slowsocat.sh
 ```
-10. Link the [throttle.py](arduinotnc/throttle.py) file to `.throttle.py` (\*)
+11. Link the [arduinotnc/throttle.py](throttle.py) file to `.throttle.py` (\*)
 ```
 % ln -s arduinotnc/throttle.py .throttle.py
 ```
-11. Reboot and re-login
+12. Reboot and re-login
 ```
 % sudo reboot
 ```
-12. Watch the AX25 packets go by!
+13. Watch the AX25 packets go by!
 ```
 % cd ~
 % tail -f .ax0.log
