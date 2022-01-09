@@ -2,7 +2,9 @@
 
 The two RPis will be called bridge, with IP address 192.168.100.101 and callsign MYCALL-8, and satellite, with IP address 192.168.100.102 and callsign MYCALL-9. The bridge RPi will need to be connected by WiFi to the internet. 
 
-Instructions marked with a (\*) are only necessary for the virtual raspberry pi setup. The internet on the virtual raspberry pi will come from the host computer (which may be connected to WiFi or ethernet cable) but will appear as ethernet (hardwired) to the virtual machine. 
+## Additional setup instructions for Virtual Raspberry PIs
+
+Instructions marked with a (\*) are only necessary for the virtual raspberry pi setup (but won't hurt the hardware-based setup). The internet on the virtual raspberry pi will come from the host computer (which may be connected to WiFi or ethernet cable) but will appear as ethernet (hardwired) to the virtual machine. Each raspberry pi should be configured (before boot up) with a second network interface of type "Internal" (the first network interface will be of type NAT). 
 
 ## Bridge Setup
 
@@ -64,8 +66,12 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 2. Install the necessary software to the RPi
 ```
-% sudo apt-get install git stunnel ax25-tools ntpdate
+% sudo apt-get install -y git ax25-tools ntpdate
 % sudo apt-get remove ntp
+```
+3. Install the necessary software to the virtual RPi (\*)
+```
+% sudo apt-get install -y socat
 ```
 3. Add the contents of the file [place_at_end_of_etc_rc.local](place_at_end_of_etc_rc.local) at the end of `/etc/rc.local`
 4. Download all the repository files
