@@ -14,7 +14,7 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 2. Install the necessary software to the RPi
 ```
-% sudo apt-get install -y git ntp stunnel4 ax25-tools
+% sudo apt-get install -y git ntp stunnel4 ax25-tools ax25-apps
 ```
 3. Install the necessary software to the virtual RPi (\*)
 ```
@@ -38,6 +38,7 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 8. Link the [arduinotnc/rotatemap.conf](rotatemap.conf) file to `.rotatemap.conf`
 ```
+% sudo chown root.root arduinotnc/rotatemap.conf
 % sudo ln -s arduinotnc/rotatemap.conf .rotatemap.conf
 ```
 9. Link the [arduinotnc/stunnel.conf](stunnel.conf) file to `.stunnel.conf`
