@@ -9,9 +9,7 @@ if [ -f /sys/class/net/eth1/operstate ]; then
   # create virtual serial port for virtual machines
   # must execute before satellite instance...
 
-  RATE=400
-  # socat pty,link=/dev/serial0,rawer,ispeed=${BAUD},ospeed=${BAUD},b${BAUD} tcp-listen:8000,fork &
-  socat pty,link=/dev/serial0,rawer exec:"/home/pi/.slowsocat.sh 8000 ${RATE}" &
+  socat pty,link=/dev/serial0,rawer tcp-listen:8000,fork,reuseaddr &
   sleep 10
 
   EXTERNAL_INTERFACE=eth0
@@ -24,9 +22,6 @@ fi
 MTU=960
 kissattach -m $MTU -l /dev/serial0 serial 192.168.100.101
 ifconfig ax0 txqueuelen 3
-# echo    5000 > /proc/sys/net/ipv4/neigh/ax0/retrans_time_ms
-# echo 1200000 > /proc/sys/net/ipv4/neigh/ax0/base_reachable_time_ms
-# ifconfig ax0 pointopoint 192.168.100.102
 ifconfig ax0 -arp
 arp -H ax25 -s 192.168.100.102 MYCALL-9
 
