@@ -1,6 +1,6 @@
 # Setup instructions for Raspberry PIs
 
-The two RPis will be called bridge, with IP address 192.168.100.101 and callsign MYCALL-8, and satellite, with IP address 192.168.100.102 and callsign MYCALL-9. The bridge RPi will need to be connected by WiFi to the internet.
+The two RPis will be called bridge, with IP address 192.168.100.101 and callsign MYCALL-8, and satellite, with IP address 192.168.100.102 and callsign MYCALL-9. The bridge RPi will need to be connected by WiFi to the internet. Instructions marked with a (\*) are only necessary for the virtual raspberry pi setup. 
 
 ## Bridge Setup
 
@@ -10,33 +10,48 @@ The two RPis will be called bridge, with IP address 192.168.100.101 and callsign
 ```
 2. Install the necessary software to the RPi
 ```
-% sudo apt-get install git ntp stunnel4 ax25-tools
+% sudo apt-get install -y git ntp stunnel4 ax25-tools
 ```
-3. Add the contents of the file [place_at_end_of_etc_rc.local](place_at_end_of_etc_rc.local) at the end of `/etc/rc.local`
+3. Install the necessary software to the virtual RPi (\*)
+```
+% sudo apt-get install -y socat
+```
 4. Download all the repository files
 ```
 % git clone https://github.com/silver-sat/arduinotnc.git
 ```
-5. Copy the [bridge_startup_ax25.sh](bridge_startup_ax25.sh) file to `.startup.sh`
+5. Add the contents of the file [place_at_end_of_etc_rc.local](arduinotnc/place_at_end_of_etc_rc.local) at the end of `/etc/rc.local` (replacing the existing "exit 0"
 ```
-% cp arduinotnc/bridge_startup_ax25.sh .startup.sh
+% sudo sed -e '$r /dev/stdin' -e '/exit 0/d' -i /etc/rc.local < arduinotnc/place_at_end_of_etc_rc.local
 ```
-6. Append the [bridge_axports](bridge_axports) file to `/etc/ax25/axports`
+6. Link the [bridge_startup_ax25.sh](arduinotnc/bridge_startup_ax25.sh) file to `.startup.sh`
+```
+% ln -s arduinotnc/bridge_startup_ax25.sh .startup.sh
+```
+7. Append the [bridge_axports](arduinotnc/bridge_axports) file to `/etc/ax25/axports`
 ```
 % sudo cat arduinotnc/bridge_axports >> /etc/ax25/axports
 ```
-7. Copy the [stunnel.conf](stunnel.conf) file to `stunnel.conf`
+8. Link the [stunnel.conf](arduinotnc/stunnel.conf) file to `.stunnel.conf`
 ```
-% cp arduinotnc/stunnel.conf stunnel.conf
+% ln -s arduinotnc/stunnel.conf .stunnel.conf
 ```
-8. Reboot and re-login
+9. Link the [slowsocat.sh](arduinotnc/slowsocat.sh) file to `.slowsocat.sh` (\*)
+```
+% ln -s arduinotnc/slowsocat.sh .slowsocat.sh
+```
+10. Link the [throttle.py](arduinotnc/throttle.py) file to `.throttle.py` (\*)
+```
+% ln -s arduinotnc/throttle.py .throttle.py
+```
+11. Reboot and re-login
 ```
 % sudo reboot
 ```
-9. Watch the AX25 packets go by!
+12. Watch the AX25 packets go by!
 ```
 % cd ~
-% tail -f ax0.log
+% tail -f .ax0.log
 ```
 
 ## Satellite Setup
