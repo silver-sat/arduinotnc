@@ -57,11 +57,15 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 % echo "restrict 192.168.100.0 mask 255.255.255.0" | sudo sed -e '/#restrict 192.168.123.0/r /dev/stdin' -i /etc/ntp.conf
 ```
-13. Reboot and re-login
+13. Write down the internal network interface IP address (second line, after `inet`). Should be of the form `169.254.???.???`. (\*)
+```
+% ifconfig eth1
+```
+14. Reboot and re-login
 ```
 % sudo reboot
 ```
-14. Watch the AX25 packets go by!
+15. Watch the AX25 packets go by!
 ```
 % cd ~
 % tail -f .ax0.log
@@ -121,11 +125,15 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 % ln -s arduinotnc/overhead.jpg .
 ```
-10. Reboot and re-login
+10. Fix the bridge internal network interface IP address. Edit .startup.sh, find `BRIDGE_ETH1_IP=` and change the IP address to that from step 13 of the bridge setup. (\*).
+```
+% nano .startup.sh
+```
+11. Reboot and re-login
 ```
 % sudo reboot
 ```
-11. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
+12. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
 ```
 % cd ~
 % python3 tweetpic.py overhead.jpg
