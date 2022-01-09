@@ -18,14 +18,15 @@ if [ -e /sys/class/net/eth1/operstate ]; then
   # change 192.254.192.195 to be the address of the "internal" virtual 
   # box interface (eth1) on the other raspberry pi (virtual bridge)
 
-  BRIDGE_ETH1_IP=169.254.192.195
-  BAUD=115200
+  RATE=400
+  BRIDGE_ETH1_IP=169.254.36.184
  
   until ping -n -c 1 ${BRIDGE_ETH1_IP} >/dev/null 2>&1; do
     sleep 5
   done
 
-  socat pty,link=/dev/serial0,rawer,ispeed=${BAUD},ospeed=${BAUD},b${BAUD} tcp:${BRIDGE_ETH1_IP}:8000,retry=11,interval=5 &
+  echo "$RATE" > /home/pi/.rate.txt
+  socat pty,link=/dev/serial0,rawer exec:"/home/pi/.slowsocat.sh ${BRIDGE_ETH1_IP} 8000 ${RATE}" &
 
   until [ -e /dev/serial0 ]; do
     sleep 5

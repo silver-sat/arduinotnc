@@ -1,6 +1,5 @@
 
 # Note, run as root from /etc/rc.local
-set -x
 
 EXTERNAL_INTERFACE=wlan0
 
