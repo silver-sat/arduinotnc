@@ -133,13 +133,14 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 % nano .startup.sh
 ```
-17. Reboot and re-login
+17. Disable the virtual machine's direct internset connection (Network Adaptor 1): from the virtual machine's menu, select Devices, Network, Connect Network Adaptor 1 and ensure there is no "check mark" on the "Connect Network Adaptor 1" menu item. There *should* be a "check mark" on "Connect Network Adaptor 2". 
+18. Reboot and re-login
 ```
 % sudo reboot
 ```
-18. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
+19. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
 ```
 % cd ~
 % ./payload.sh
 ```
-19. Look for the [result](https://twitter.com/NathanE15158060).
+20. Look for the [result](https://twitter.com/NathanE15158060).
