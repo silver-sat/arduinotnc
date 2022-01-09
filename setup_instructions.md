@@ -125,7 +125,7 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 % ln -s arduinotnc/overhead.jpg .
 ```
-10. Fix the bridge internal network interface IP address. Edit .startup.sh, find `BRIDGE_ETH1_IP=` and change the IP address to that from step 13 of the bridge setup. (\*).
+10. Fix the bridge internal network interface IP address. Edit `.startup.sh`, find `BRIDGE_ETH1_IP=` and change the IP address to that from step 13 of the bridge setup. (\*).
 ```
 % nano .startup.sh
 ```
