@@ -53,11 +53,15 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 % ln -s arduinotnc/throttle.py .throttle.py
 ```
-12. Reboot and re-login
+12. Allow the satellite raspberry pi to access the current time from the NTP server
+```
+% echo "restrict 192.168.100.0 mask 255.255.255.0" | sudo sed -e '/#restrict 192.168.123.0/r /dev/stdin' -i /etc/ntp.conf
+```
+13. Reboot and re-login
 ```
 % sudo reboot
 ```
-13. Watch the AX25 packets go by!
+14. Watch the AX25 packets go by!
 ```
 % cd ~
 % tail -f .ax0.log
