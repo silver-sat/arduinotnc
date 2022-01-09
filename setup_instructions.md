@@ -24,7 +24,7 @@ Instructions marked with a (\*) are only necessary for the virtual raspberry pi 
 ```
 % git clone https://github.com/silver-sat/arduinotnc.git
 ```
-5. Add the contents of the file [place_at_end_of_etc_rc.local](arduinotnc/place_at_end_of_etc_rc.local) at the end of `/etc/rc.local` (replacing the existing "exit 0"
+5. Add the contents of the file [arduinotnc/place_at_end_of_etc_rc.local](place_at_end_of_etc_rc.local) at the end of `/etc/rc.local` (replacing the existing "exit 0")
 ```
 % sudo sed -e '$r /dev/stdin' -e '/exit 0/d' -i /etc/rc.local < arduinotnc/place_at_end_of_etc_rc.local
 ```
