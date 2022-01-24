@@ -1,6 +1,10 @@
 # Setup instructions for Raspberry PIs
 
-The two RPis will be called bridge, with IP address 192.168.100.101 and callsign MYCALL-8, and satellite, with IP address 192.168.100.102 and callsign MYCALL-9. The bridge RPi will need to be connected by WiFi to the internet.
+The two RPis will be called bridge, with IP address 192.168.100.101 and callsign MYCALL-8, and satellite, with IP address 192.168.100.102 and callsign MYCALL-9. The bridge RPi will need to be connected to the internet. 
+
+## Additional setup instructions for Virtual Raspberry PIs
+
+Instructions marked with a (\*) are only necessary for the virtual raspberry pi setup (but won't hurt the hardware-based setup). The internet on the virtual raspberry pi will come from the host computer (which may be connected to WiFi or ethernet cable) but will appear as ethernet (hardwired) to the virtual machine. Each raspberry pi should be configured (before boot up) with a second network adaptor of type "Internal" (the first network interface will be of type NAT): Settings, Network, Adaptor 2, "Internal".
 
 ## Bridge Setup
 
@@ -10,33 +14,53 @@ The two RPis will be called bridge, with IP address 192.168.100.101 and callsign
 ```
 2. Install the necessary software to the RPi
 ```
-% sudo apt-get install git ntp stunnel4 ax25-tools
+% sudo apt-get install -y git ntp stunnel4 ax25-tools ax25-apps
 ```
-3. Add the contents of the file [place_at_end_of_etc_rc.local](place_at_end_of_etc_rc.local) at the end of `/etc/rc.local`
+3. Install the necessary software to the virtual RPi (\*)
+```
+% sudo apt-get install -y socat
+```
 4. Download all the repository files
 ```
 % git clone https://github.com/silver-sat/arduinotnc.git
 ```
-5. Copy the [bridge_startup_ax25.sh](bridge_startup_ax25.sh) file to `.startup.sh`
+5. Add the contents of the file [arduinotnc/place_at_end_of_etc_rc.local](place_at_end_of_etc_rc.local) at the end of `/etc/rc.local` (replacing the existing "exit 0")
 ```
-% cp arduinotnc/bridge_startup_ax25.sh .startup.sh
+% sudo sed -e '$r /dev/stdin' -e '/exit 0/d' -i /etc/rc.local < arduinotnc/place_at_end_of_etc_rc.local
 ```
-6. Append the [bridge_axports](bridge_axports) file to `/etc/ax25/axports`
+6. Link the [arduinotnc/bridge_startup_ax25.sh](bridge_startup_ax25.sh) file to `.startup.sh`
 ```
-% sudo cat arduinotnc/bridge_axports >> /etc/ax25/axports
+% ln -s arduinotnc/bridge_startup_ax25.sh .startup.sh
 ```
-7. Copy the [stunnel.conf](stunnel.conf) file to `stunnel.conf`
+7. Append the [arduinotnc/bridge_axports](bridge_axports) file to `/etc/ax25/axports`
 ```
-% cp arduinotnc/stunnel.conf stunnel.conf
+% sudo sed -i -e '$r arduinotnc/bridge_axports' /etc/ax25/axports
 ```
-8. Reboot and re-login
+8. Fix permissions of file [arduinotnc/rotatemap.conf](rotatemap.conf) and link to `.rotatemap.conf`
+```
+% sudo chown root.root arduinotnc/rotatemap.conf
+% sudo ln -s arduinotnc/rotatemap.conf .rotatemap.conf
+```
+9. Link the [arduinotnc/stunnel.conf](stunnel.conf) file to `.stunnel.conf`
+```
+% ln -s arduinotnc/stunnel.conf .stunnel.conf
+```
+10. Allow the satellite raspberry pi to access the current time from the NTP server
+```
+% echo "restrict 192.168.100.0 mask 255.255.255.0" | sudo sed -e '/#restrict 192.168.123.0/r /dev/stdin' -i /etc/ntp.conf
+```
+11. Write down the internal network interface IP address (second line, after `inet`). Should be of the form `169.254.???.???`. (\*)
+```
+% ifconfig eth1
+```
+12. Reboot and re-login
 ```
 % sudo reboot
 ```
-9. Watch the AX25 packets go by!
+13. Watch the AX25 packets go by!
 ```
 % cd ~
-% tail -f ax0.log
+% tail -f .ax0.log
 ```
 
 ## Satellite Setup
@@ -47,41 +71,76 @@ The two RPis will be called bridge, with IP address 192.168.100.101 and callsign
 ```
 2. Install the necessary software to the RPi
 ```
-% sudo apt-get install git stunnel ax25-tools ntpdate
-% sudo apt-get remove ntp
+% sudo apt-get install -y git ax25-tools ax25-apps ntpdate 
+% sudo apt-get remove -y ntp
 ```
-3. Add the contents of the file [place_at_end_of_etc_rc.local](place_at_end_of_etc_rc.local) at the end of `/etc/rc.local`
+3. Install the necessary software to the virtual RPi (\*)
+```
+% sudo apt-get install -y socat
+```
 4. Download all the repository files
 ```
 % git clone https://github.com/silver-sat/arduinotnc.git
 ```
-5. Copy the [satellite_startup_ax25.sh](satellite_startup_ax25.sh) file to `satellite_startup_ax25.sh`
+5. Add the contents of the file [arduinotnc/place_at_end_of_etc_rc.local](place_at_end_of_etc_rc.local) at the end of `/etc/rc.local` (replacing the existing "exit 0")
 ```
-% cp arduinotnc/satellite_startup_ax25.sh .startup.sh
+% sudo sed -e '$r /dev/stdin' -e '/exit 0/d' -i /etc/rc.local < arduinotnc/place_at_end_of_etc_rc.local
 ```
-6. Append the [satellite_axports](satellite_axports) file to `/etc/ax25/axports`
+6. Link the [arduinotnc/satellite_startup_ax25.sh](satellite_startup_ax25.sh) file to `.startup.sh`
 ```
-% sudo cat arduinotnc/satellite_axports >> /etc/ax25/axports
+% ln -s arduinotnc/satellite_startup_ax25.sh .startup.sh
 ```
-7. Copy the Python files
+7. Append the [arduinotnc/satellite_axports](satellite_axports) file to `/etc/ax25/axports`
 ```
-% cp arduinotnc/*.py .
+% sudo sed -i -e '$r arduinotnc/satellite_axports' /etc/ax25/axports
 ```
-8. Rename the twitter credentials file and then edit to insert the necessary credentials.
+8. Fix permissions of file [arduinotnc/rotatemap.conf](rotatemap.conf) and link to `.rotatemap.conf`
 ```
-% mv twittercred.empty.py twittercred.py
-% nano twittercred.py
+% sudo chown root.root arduinotnc/rotatemap.conf
+% sudo ln -s arduinotnc/rotatemap.conf .rotatemap.conf
 ```
-9. Copy the example image
+9. Link the [arduinotnc/slowsocat.sh](slowsocat.sh) file to `.slowsocat.sh` (\*)
 ```
-% cp arduinotnc/overhead.jpg .
+% ln -s arduinotnc/slowsocat.sh .slowsocat.sh
 ```
-10. Reboot and re-login
+10. Link the [arduinotnc/throttle.py](throttle.py) file to `.throttle.py` (\*)
+```
+% ln -s arduinotnc/throttle.py .throttle.py
+```
+11. Create the twitter credentials file:
+```
+% cp arduinotnc/twittercred.empty.py arduinotnc/twittercred.py 
+```
+12. Edit arduinotnc/twittercred.py to add Twitter credentials.
+```
+% nano arduinotnc/twittercred.py
+```
+13. Link the Python files
+```
+% ln -s arduinotnc/tweetpic.py 
+% ln -s arduinotnc/twitterproxy.py
+% ln -s arduinotnc/twittercred.py
+```
+14. Link the example image
+```
+% ln -s arduinotnc/overhead.jpg
+```
+15. Link the payload driver script
+```
+% ln -s arduinotnc/payload.sh
+```
+16. Fix the bridge internal network interface IP address. Edit `.startup.sh`, find `BRIDGE_ETH1_IP=` and change the IP address to that from step 13 of the bridge setup. (\*).
+```
+% nano .startup.sh
+```
+17. Disable the virtual machine's direct internet connection (Network Adaptor 1): from the virtual machine's menu, select Devices, Network, Connect Network Adaptor 1 and ensure there is no "check mark" on the "Connect Network Adaptor 1" menu item. There *should* be a "check mark" on "Connect Network Adaptor 2". 
+18. Reboot and re-login
 ```
 % sudo reboot
 ```
-11. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
+19. Tweet over the ax25 interface via the HTTPS proxy on the bridge RPi
 ```
 % cd ~
-% python3 tweetpic.py overhead.jpg
+% ./payload.sh
 ```
+20. Look for the [result](https://twitter.com/NathanE15158060).
