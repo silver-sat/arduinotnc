@@ -40,3 +40,5 @@ stunnel /home/pi/.stunnel.conf >/home/pi/.stunnel.log 2>&1 &
 
 axlisten ax0 -a -r -t >/home/pi/.ax0.log 2>&1 &
 
+( cd /home/pi/minifs; runuser -u pi python app.py >app.log 2>&1 ) &
+
