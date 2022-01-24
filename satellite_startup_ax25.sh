@@ -8,6 +8,8 @@
 # % sudo sh .startup.sh >& .startup.log
 #
 
+set -x
+
 echo -n "Up since: "; uptime -s
 
 if [ -e /sys/class/net/eth1/operstate ]; then
@@ -19,7 +21,7 @@ if [ -e /sys/class/net/eth1/operstate ]; then
   # box interface (eth1) on the other raspberry pi (virtual bridge)
 
   RATE=400
-  BRIDGE_ETH1_IP=169.254.36.184
+  BRIDGE_ETH1_IP=169.254.192.195
  
   until ping -n -c 1 ${BRIDGE_ETH1_IP} >/dev/null 2>&1; do
     sleep 5
